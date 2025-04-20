@@ -1,0 +1,19 @@
+steps:
+  # Install dependencies
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+  
+  # Run tests
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['test']
+
+  # Build the application (if applicable)
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build']
+
+  # Deploy to GCP (e.g., Cloud Run)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['run', 'deploy', 'my-app', '--image', 'gcr.io/$PROJECT_ID/my-app', '--region', 'us-central1']
+  
+images:
+  - 'gcr.io/$PROJECT_ID/my-app'
