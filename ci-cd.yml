@@ -1,0 +1,31 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+ - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+ - name: Run Cloud Build
+      run: |
+        gcloud builds submit --config cloudbuild.yaml .
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['container', 'clusters', 'get-credentials', 'my-cluster', '--zone', 'us-central1-a', '--project', '$PROJECT_ID']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['kubectl', 'apply', '-f', 'k8s/deployment.yaml']
